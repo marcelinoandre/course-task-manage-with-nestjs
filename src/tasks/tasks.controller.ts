@@ -7,6 +7,8 @@ import {
   Patch,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { title } from 'process';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -19,10 +21,9 @@ export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
-  getTasks(@Query()  filterDto: GetTasksFilterDto): Task[] {
-    
-
-    if(Object.keys(filterDto).length) return this.taskService.getTasksWithFilters(filterDto)
+  getTasks(@Query() filterDto: GetTasksFilterDto): Task[] {
+    if (Object.keys(filterDto).length)
+      return this.taskService.getTasksWithFilters(filterDto);
 
     return this.taskService.getAllTasks();
   }
@@ -33,6 +34,7 @@ export class TasksController {
   }
 
   @Post()
+  @UsePipes(ValidationPipe)
   createTask(@Body() createTaskDto: CreateTaskDto): Task {
     return this.taskService.createTask(createTaskDto);
   }
