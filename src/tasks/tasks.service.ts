@@ -29,7 +29,11 @@ export class TasksService {
   }
 
   getTaskById(id: string): Task {
-    return this.tasks.find(task => task.id === id);
+    const task = this.tasks.find(task => task.id === id);
+
+    if (!task) throw new NotFoundException();
+
+    return task;
   }
 
   createTask(createTaskDto: CreateTaskDto) {
@@ -49,7 +53,7 @@ export class TasksService {
   updateTask(id: string, status: TaskStatus): Task {
     const index = this.tasks.findIndex(task => task.id === id);
 
-    if (index < 0) console.log('não localizado');
+    if (index < 0) throw new NotFoundException();
 
     this.tasks[index].status = status;
 
