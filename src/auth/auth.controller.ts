@@ -10,6 +10,6 @@ export class AuthController {
   async signUp(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<void> {
-    this.authService.signUp(authCredentialsDto);
+   return this.authService.signUp(authCredentialsDto);
   }
 }
