@@ -27,7 +27,6 @@ export class TaskRepository extends Repository<TaskEntity> {
     const { title, description } = createTaskDto;
 
     const task = new TaskEntity();
-    task.id = uuidv4();
     task.title = title;
     task.description = description;
     task.status = TaskStatus.OPEN;
