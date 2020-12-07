@@ -21,6 +21,8 @@ import { TasksService } from './tasks.service';
 import { validate as uuidValidate } from 'uuid';
 import { TaskStatus } from './task-status.enum';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.entity';
 
 @Controller('tasks')
 @UseGuards(AuthGuard())
@@ -30,33 +32,42 @@ export class TasksController {
   @Get()
   getTasks(
     @Query(ValidationPipe) filterDto: GetTasksFilterDto,
-  ): Promise<TaskEntity[]> {
-    return this.taskService.getTasks(filterDto);
+    @GetUser() user:  User
+    ): Promise<TaskEntity[]> {
+    return this.taskService.getTasks(filterDto, user);
   }
 
   @Get(':id')
-  getTaskById(@Param('id') id: string): Promise<TaskEntity> {
-    return this.taskService.getTaskById(id);
+  getTaskById(
+    @Param('id') id: string,
+    @GetUser() user: User
+    ): Promise<TaskEntity> {
+      console.log(id)
+    return this.taskService.getTaskById(id, user);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  createTask(@Body() createTaskDto: CreateTaskDto): Promise<TaskEntity> {
-    return this.taskService.createTask(createTaskDto);
+  createTask(
+    @Body() createTaskDto: CreateTaskDto,
+    @GetUser() user: User,
+  ): Promise<TaskEntity> {
+    return this.taskService.createTask(createTaskDto, user);
   }
 
   @Patch('/:id/status')
   async updateTask(
     @Param('id') id: string,
     @Body('status', TaskStatusValidationPipe) status: TaskStatus,
+    @GetUser() user: User
   ): Promise<TaskEntity> {
     if (!uuidValidate(id)) throw new BadRequestException();
-    return this.taskService.updateTask(id, TaskStatus[status]);
+    return this.taskService.updateTask(id, TaskStatus[status], user);
   }
 
   @Delete(':id')
-  deleteTask(@Param('id') id: string): Promise<void> {
+  deleteTask(@Param('id') id: string, @GetUser() user: User): Promise<void> {
     if (!uuidValidate(id)) throw new BadRequestException();
-    return this.taskService.deleteTask(id);
+    return this.taskService.deleteTask(id, user);
   }
 }

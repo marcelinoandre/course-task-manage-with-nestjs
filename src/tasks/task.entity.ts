@@ -1,7 +1,10 @@
+import { User } from 'src/auth/user.entity';
 import {
   BaseEntity,
   Column,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -20,4 +23,14 @@ export class TaskEntity extends BaseEntity {
 
   @Column()
   status: TaskStatus;
+
+  @ManyToOne(
+    type => User,
+    user => user.tasks,
+    { eager: false },
+  )
+  user: User;
+
+  @Column()
+  userId: string;
 }
