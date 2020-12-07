@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -27,22 +28,30 @@ import { User } from 'src/auth/user.entity';
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
+  private logger = new Logger('TasksController');
   constructor(private taskService: TasksService) {}
 
   @Get()
   getTasks(
     @Query(ValidationPipe) filterDto: GetTasksFilterDto,
-    @GetUser() user:  User
-    ): Promise<TaskEntity[]> {
+    @GetUser() user: User,
+  ): Promise<TaskEntity[]> {
+    
+    this.logger.verbose(
+      `User "${user.username}" retrieving all tasks. Filters ${JSON.stringify(
+        filterDto,
+      )}`,
+    );
+    
     return this.taskService.getTasks(filterDto, user);
   }
 
   @Get(':id')
   getTaskById(
     @Param('id') id: string,
-    @GetUser() user: User
-    ): Promise<TaskEntity> {
-      console.log(id)
+    @GetUser() user: User,
+  ): Promise<TaskEntity> {
+    console.log(id);
     return this.taskService.getTaskById(id, user);
   }
 
@@ -59,7 +68,7 @@ export class TasksController {
   async updateTask(
     @Param('id') id: string,
     @Body('status', TaskStatusValidationPipe) status: TaskStatus,
-    @GetUser() user: User
+    @GetUser() user: User,
   ): Promise<TaskEntity> {
     if (!uuidValidate(id)) throw new BadRequestException();
     return this.taskService.updateTask(id, TaskStatus[status], user);
