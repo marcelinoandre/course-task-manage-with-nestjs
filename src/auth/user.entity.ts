@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { TaskEntity } from 'src/tasks/task.entity';
 import {
   BaseEntity,
