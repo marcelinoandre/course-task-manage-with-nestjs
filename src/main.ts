@@ -14,8 +14,5 @@ async function bootstrap() {
                              logger.log(
                                `Application listerning on port ${port}`,
                              );
-
-
-                             console.log(process.env.PORTx);
                            }
 bootstrap();
